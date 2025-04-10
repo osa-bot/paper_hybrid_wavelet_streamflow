@@ -42,6 +42,17 @@ pd.set_option('display.max_columns', None)
 
 def set_style():
 
+    """
+Sets the plotting style for seaborn.
+
+    This method configures seaborn with a specific color palette, 
+    context settings (font size and family), and overall style to 
+    ensure consistent and visually appealing plots.
+
+    Returns:
+        None
+    """
+
     flatui = [sns.xkcd_rgb["pale red"], sns.xkcd_rgb["denim blue"], sns.xkcd_rgb["denim blue"], sns.xkcd_rgb["amber"]]    
     sns.set_palette("colorblind")
     sns.set_context("paper", font_scale=1.0, 
@@ -90,6 +101,18 @@ def get_shape(lst, shape=()):
 
  
 def make_instances_from_dataframe(data, ts, window_size, output_size=1):
+    """
+Creates instances from a dataframe for time series forecasting.
+
+    Args:
+        data: The input dataframe containing the time series data.
+        ts: The target time series data.
+        window_size: The size of the sliding window.
+        output_size: The number of steps to predict (default is 1).
+
+    Returns:
+        tuple: A tuple containing the input features (X), target values (y), and datetime indices, all as NumPy arrays.
+    """
     datetime = data.index    
     data = np.asarray(data)
     assert 0 < window_size+output_size < data.shape[0]
@@ -112,6 +135,20 @@ def MAPE(forecasts, original):
     
     
     
+    """
+Calculates the Mean Absolute Percentage Error (MAPE).
+
+    Args:
+        forecasts: The forecasted values.
+        original: The original or actual values.
+
+    Returns:
+        float: The calculated MAPE value.
+    """
+    
+    
+    
+    
     mape_all=[]
     for i in range(len(forecasts)):
         mape_all.append(100*(abs(original[i]-forecasts[i])/original[i]))
@@ -124,6 +161,21 @@ def MAPE(forecasts, original):
     return mape
 
 def MAPE_all(forecasts, original):
+    
+    
+    
+    
+    """
+Calculates the Mean Absolute Percentage Error (MAPE) for all forecast values.
+
+    Args:
+        forecasts: The forecasted values.
+        original: The original or actual values.
+
+    Returns:
+        numpy.ndarray: A NumPy array containing the MAPE for each corresponding 
+                       forecast and original value.
+    """
     
     
     
@@ -193,6 +245,18 @@ def mean_absolute_percentage_error(y_true, y_pred):
 def fit_model(model, trainX, trainy, param_grid):
         
         
+    """
+Calculates the Mean Absolute Percentage Error.
+
+    Args:
+        y_true: The true values.
+        y_pred: The predicted values.
+
+    Returns:
+        float: The Mean Absolute Percentage Error as a percentage.
+    """
+        
+        
     my_cv = [(traincv,testcv) for traincv, testcv in TimeSeriesSplit(n_splits=20).split(trainX)]
     gcv = GridSearchCV(estimator=model, param_grid= param_grid, cv=my_cv, verbose=0, n_jobs=-1, scoring='neg_mean_squared_error')
            
@@ -208,6 +272,22 @@ def fit_model(model, trainX, trainy, param_grid):
 
     
 def make_data(input_file):
+    
+    
+    
+    """
+Fits a model using GridSearchCV with time series cross-validation.
+
+    Args:
+        model: The model to be fitted.
+        trainX: The training data features.
+        trainy: The training data target values.
+        param_grid: A dictionary of parameters to tune for the model.
+
+    Returns:
+        tuple: A tuple containing the best fitted estimator and a dictionary 
+               of the best parameters found during grid search.
+    """
     
     
     
@@ -243,6 +323,15 @@ def make_data(input_file):
     
     l=[]  
     for  index, row in ts2.iloc[:,1:32].iterrows():
+        """
+Creates a dataset from an input file and returns it along with the station estimate.
+
+    Args:
+        input_file: The path to the input CSV file.
+
+    Returns:
+        tuple: A tuple containing the processed dataset (numpy array) and the station estimate (string).
+    """
         #print(index, row)
         for i in range(len(row.index)):
            # print(index.day)
@@ -294,6 +383,19 @@ def param_config():
 path_pkl = 'pkl/'
 
 if not os.path.exists(path_pkl):
+    """
+Generates a list of parameter configurations.
+
+    This method creates all possible combinations of filter, lookback, 
+    horizon, and decision level parameters and returns them as a list of lists.
+
+    Args:
+        None
+
+    Returns:
+        list[list]: A list of lists, where each inner list represents a unique 
+            parameter configuration with the format [filter, lookback, horizon, decision_level].
+    """
     os.makedirs(path_pkl)
 
 estimators=[
